@@ -27,15 +27,22 @@
 #ifndef QEMU_OSDEP_H
 #define QEMU_OSDEP_H
 
+#include "config-host.h"
+
 /* arch dependent signal context retriev macros */
 #if defined(__mips__)
 #define UC_GR(uc) ((uc)->uc_mcontext.gregs)
 #define UC_PC(uc) ((uc)->uc_mcontext.pc)
 #elif defined(__loongarch__)
+#ifdef CONFIG_LOONGARCH_NEW_WORLD
 #define UC_GR(uc) ((uc)->uc_mcontext.__gregs)
 #define UC_PC(uc) ((uc)->uc_mcontext.__pc)
-#define UC_FREG(uc) ((uc)->uc_mcontext.__fpregs)
-#define UC_FCSR(uc) ((uc)->uc_mcontext.__fcsr)
+#else
+    #define UC_GR(uc) ((uc)->uc_mcontext.sc_regs)
+    #define UC_PC(uc) ((uc)->uc_mcontext.sc_pc)
+    #define UC_FREG(uc) ((uc)->uc_mcontext.__fpregs)
+    #define UC_FCSR(uc) ((uc)->uc_mcontext.__fcsr)
+#endif
 #else
 #error "unknown arch"
 #endif

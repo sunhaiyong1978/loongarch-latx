@@ -1,3 +1,4 @@
+#include "config-host.h"
 #include "lsenv.h"
 #include "myalign.h"
 #include "elfloader.h"

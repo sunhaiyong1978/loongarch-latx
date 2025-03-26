@@ -1,3 +1,4 @@
+#include "config-host.h"
 #include "common.h"
 #include "diStorm/distorm.h"
 #include "ir1.h"

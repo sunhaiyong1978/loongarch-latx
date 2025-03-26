@@ -5,6 +5,8 @@
  */
 #ifndef LOONGARCH_EXTCONTEXT_H
 #define LOONGARCH_EXTCONTEXT_H
+#include "config-host.h"
+
 #if defined(CONFIG_LOONGARCH_NEW_WORLD) && defined(__loongarch__)
 #include "qemu/osdep.h"
 #include "asm/sigcontext.h"

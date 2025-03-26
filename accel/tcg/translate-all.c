@@ -4607,6 +4607,7 @@ int shared_private_interpret(siginfo_t *info, ucontext_t *uc)
         *(int64_t *)(mem_addr + 24) = UC_GET_LASX(&extctx, fd, 3, int64_t);
         goto end;
 #endif
+#ifndef CONFIG_LOONGARCH_NEW_WORLD
     case 0xc0:
         if (inst & (1<<21)) {
             /*VLDREPL.W*/
@@ -4634,6 +4635,7 @@ int shared_private_interpret(siginfo_t *info, ucontext_t *uc)
             *((int8_t *)&UC_FREG(uc)[fd].__val32[i] + 3) = *(int8_t *)mem_addr;
         }
         goto end;
+#endif
     case 0xb8: /* LDL.W */
     case 0xb9: /* LDR.W */
     case 0xba: /* LDL.D */

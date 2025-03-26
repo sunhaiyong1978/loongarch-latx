@@ -2,6 +2,8 @@
 #error Nope
 #endif
 
+#include "config-host.h"
+
 GO("libEGL.so.1", libegl)
 #ifndef CONFIG_LOONGARCH_NEW_WORLD
 GO("libdl.so.2", libdl)

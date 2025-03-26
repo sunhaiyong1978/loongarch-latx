@@ -4,6 +4,8 @@
 #ifndef __wrappedlibcTYPES_H_
 #define __wrappedlibcTYPES_H_
 
+#include "config-host.h"
+
 #ifndef LIBNAME
 #error You should only #include this file inside a wrapped*.c file
 #endif
