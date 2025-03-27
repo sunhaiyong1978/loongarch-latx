@@ -23,9 +23,7 @@
 #ifdef CONFIG_LATX
 #include "latx-options.h"
 #include "reg-map.h"
-#ifndef CONFIG_LOONGARCH_NEW_WORLD
 #include <lasxintrin.h>
-#endif
 #endif
 
 /* from the Linux kernel - /arch/x86/include/uapi/asm/sigcontext.h */
