@@ -124,6 +124,15 @@ void tu_reset_tb(TranslationBlock *tb);
 
 #define SMC_BITMAP_USE_THRESHOLD 10
 
+#define EXPAND_TO_64BIT(type, addr) ({ \
+    type value = *(type *)(addr); \
+    int64_t result = value; \
+    for (int i = 1; i < (64 / (sizeof(type) * 8)); i++) { \
+        result = (result << (sizeof(type) * 8)) | value; \
+    } \
+    result; \
+})  /* EXPAND_TO_64BIT */
+
 /**
  * struct page_entry - page descriptor entry
  * @pd:     pointer to the &struct PageDesc of the page this entry represents
@@ -4634,6 +4643,37 @@ int shared_private_interpret(siginfo_t *info, ucontext_t *uc)
             *((int8_t *)&UC_FREG(uc)[fd].__val32[i] + 2) = *(int8_t *)mem_addr;
             *((int8_t *)&UC_FREG(uc)[fd].__val32[i] + 3) = *(int8_t *)mem_addr;
         }
+        goto end;
+#else  /* CONFIG_LOONGARCH_NEW_WORLD */
+    case 0xc0:
+        if (inst & (1<<21)) {
+            /*VLDREPL.W*/
+            int64_t tmp_mem = EXPAND_TO_64BIT(int32_t, mem_addr);
+            for(int i = 0; i < 4; i++) {
+                UC_SET_LASX(&extctx, fd, i, &tmp_mem, int64_t);
+            }
+            goto end;
+        }
+        /*VLDREPL.D*/
+        for(int i = 0; i < 4; i++) {
+	    UC_SET_LASX(&extctx, fd, i, mem_addr, int64_t);
+        }
+        goto end;
+    case 0xc1:/*VLDREPL.H*/
+	{
+        int64_t tmp_mem = EXPAND_TO_64BIT(int16_t, mem_addr);
+        for(int i = 0; i < 4; i++) {
+	    UC_SET_LASX(&extctx, fd, i, &tmp_mem, int64_t);
+        }
+	}
+        goto end;
+    case 0xc2:/*VLDREPL.B*/
+	{
+        int64_t tmp_mem = EXPAND_TO_64BIT(int8_t, mem_addr);
+        for(int i = 0; i < 4; i++) {
+            UC_SET_LASX(&extctx, fd, i, &tmp_mem, int64_t);
+        }
+	}
         goto end;
 #endif
     case 0xb8: /* LDL.W */
